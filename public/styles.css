@@ -1,0 +1,53 @@
+body { 
+    font-family: Arial, sans-serif; 
+    margin: 0; 
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    /* BACKGROUND IMAGE PLACEHOLDER */
+    background-image: url('assets/background.jpg'); 
+    background-size: cover;
+    background-position: center;
+    background-color: #111; /* Fallback color */
+    color: #333;
+}
+
+.container { 
+    background: rgba(255, 255, 255, 0.95); 
+    padding: 30px; 
+    border-radius: 12px; 
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    max-width: 500px; 
+    width: 100%;
+    text-align: center;
+}
+
+.flyer-placeholder {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    background-color: #ddd; /* Shows if image is missing */
+}
+
+h1 { margin: 0 0 5px 0; color: #000; }
+h3 { margin: 0 0 20px 0; color: #555; }
+
+button { 
+    background: #000; color: #fff; padding: 15px; width: 100%; 
+    border: none; cursor: pointer; border-radius: 8px; font-size: 16px; font-weight: bold;
+}
+button:hover { background: #333; }
+
+input, select { 
+    padding: 15px; width: 100%; margin-bottom: 15px; 
+    box-sizing: border-box; border-radius: 8px; border: 1px solid #ccc;
+}
+
+#ticketDisplay, #verifyResult { 
+    font-weight: bold; margin-top: 20px; font-size: 18px; padding: 15px;
+    background: #f9f9f9; border-radius: 8px; border: 1px dashed #ccc;
+}

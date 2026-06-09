@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gate Admin - Party with sadly happy</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container" style="max-width: 400px;">
+        <h2>Gate Scanner</h2>
+        <p>Verify tickets before granting entry.</p>
+        
+        <input type="text" id="scanCode" placeholder="Enter Ticket ID (e.g. VIP-8A9C2)" style="text-transform: uppercase;">
+        <button onclick="verifyTicket()">Verify Ticket</button>
+        
+        <div id="verifyResult" style="display:none;"></div>
+    </div>
+
+    <script>
+        function verifyTicket() {
+            const ticketId = document.getElementById('scanCode').value.trim().toUpperCase();
+            if(!ticketId) return alert('Enter a ticket ID');
+
+            fetch('/check-ticket', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ticketId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const resultDiv = document.getElementById('verifyResult');
+                resultDiv.style.display = 'block';
+                
+                if(data.status === 'VALID') {
+                    resultDiv.innerHTML = `<span style="color: green; font-size: 22px;">✅ ${data.message}</span>`;
+                } else if (data.status === 'USED') {
+                    resultDiv.innerHTML = `<span style="color: orange; font-size: 18px;">⚠️ ${data.message}</span>`;
+                } else {
+                    resultDiv.innerHTML = `<span style="color: red; font-size: 18px;">❌ ${data.message}</span>`;
+                }
+                
+                // Clear input for the next person
+                document.getElementById('scanCode').value = '';
+            });
+        }
+    </script>
+</body>
+</html>

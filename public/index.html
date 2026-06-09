@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Party with sadly happy</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <img src="assets/flyer.jpg" alt="Party Flyer" class="flyer-placeholder" onerror="this.style.display='none'">
+
+        <h1>Party with sadly happy</h1>
+        <h3>July 5th, 2026</h3>
+        
+        <input type="email" id="email" placeholder="Enter your email" required>
+        <select id="ticketType">
+            <option value="Regular" data-price="5000">Regular - ₦5,000</option>
+            <option value="VIP" data-price="20000">VIP - ₦20,000</option>
+            <option value="Executive" data-price="50000">Executive - ₦50,000</option>
+        </select>
+        
+        <button onclick="payWithPaystack()">Purchase Ticket</button>
+        <div id="ticketDisplay" style="display:none;"></div>
+    </div>
+
+    <script>
+        // Replace with your ACTUAL Paystack Public Key
+        const PAYSTACK_PUBLIC_KEY = 'pk_test_your_public_key_here';
+
+        function payWithPaystack() {
+            const email = document.getElementById('email').value;
+            const select = document.getElementById('ticketType');
+            const type = select.value;
+            const price = select.options[select.selectedIndex].getAttribute('data-price') * 100;
+
+            if(!email) return alert('Please enter your email');
+
+            let handler = PaystackPop.setup({
+                key: PAYSTACK_PUBLIC_KEY,
+                email: email,
+                amount: price,
+                currency: 'NGN',
+                callback: function(response) {
+                    fetch('/verify-payment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ reference: response.reference, ticketType: type })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        const display = document.getElementById('ticketDisplay');
+                        display.style.display = 'block';
+                        if(data.success) {
+                            display.innerHTML = `
+                                <span style="color: green;">Payment Successful!</span><br>
+                                Your ${data.type} ID:<br>
+                                <span style="font-size: 28px; color: #000; letter-spacing: 2px;">${data.ticketId}</span><br>
+                                <small>Please screenshot this for the gate!</small>`;
+                        } else {
+                            display.innerHTML = `<span style="color: red;">${data.error}</span>`;
+                        }
+                    });
+                },
+                onClose: function() { alert('Transaction cancelled.'); }
+            });
+            handler.openIframe();
+        }
+    </script>
+</body>
+</html>
