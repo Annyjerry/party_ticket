@@ -1,53 +1,272 @@
-body { 
-    font-family: Arial, sans-serif; 
-    margin: 0; 
-    padding: 20px;
+:root {
+    --bg-dark: #060b12;
+    --bg-teal: #00f2c4;
+    --accent-orange: #ff6c2d;
+    --accent-light: #ffdca4;
+    --panel: rgba(4, 18, 35, 0.88);
+    --text-light: #f7fbff;
+    --text-muted: #b8dfe8;
+    --border-glow: rgba(0, 242, 196, 0.35);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--text-light);
+    background-image: url('assets/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #061018;
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    /* BACKGROUND IMAGE PLACEHOLDER */
-    background-image: url('assets/background.jpg'); 
-    background-size: cover;
-    background-position: center;
-    background-color: #111; /* Fallback color */
-    color: #333;
+    padding: 24px;
 }
 
-.container { 
-    background: rgba(255, 255, 255, 0.95); 
-    padding: 30px; 
-    border-radius: 12px; 
-    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-    max-width: 500px; 
-    width: 100%;
+body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top left, rgba(0, 242, 196, 0.18), transparent 30%),
+                radial-gradient(circle at bottom right, rgba(255, 108, 45, 0.18), transparent 25%);
+    pointer-events: none;
+}
+
+.container {
+    width: min(540px, 100%);
+    padding: 32px 32px 36px;
+    border-radius: 28px;
+    background: rgba(4, 18, 35, 0.44);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 26px 80px rgba(0, 0, 0, 0.28);
     text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(0, 242, 196, 0.25), transparent 35%),
+                radial-gradient(circle at bottom left, rgba(255, 108, 45, 0.22), transparent 30%);
+    pointer-events: none;
+}
+
+.container > * {
+    position: relative;
+    z-index: 1;
 }
 
 .flyer-placeholder {
     width: 100%;
-    max-height: 300px;
+    max-height: 340px;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 24px;
+    margin-bottom: 28px;
+    background-color: #132033;
+    border: 1px solid rgba(0, 242, 196, 0.16);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.33);
+}
+
+h1 {
+    margin: 0 0 10px;
+    font-size: clamp(2.2rem, 5vw, 3rem);
+    letter-spacing: -0.05em;
+    color: #ffffff;
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.30);
+    font-style: italic;
+}
+
+.title-party,
+.title-with,
+.title-sadly,
+.title-happy {
+    display: inline-block;
+    font-style: italic;
+}
+
+.title-party {
+    color: #ffd700;
+    background: linear-gradient(135deg, #ff8c00 0%, #ff6c2d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.title-with {
+    color: #b2f7f1;
+    opacity: 0.95;
+}
+
+.title-sadly {
+    color: #8ec9ff;
+}
+
+.title-happy {
+    color: #00f2c4;
+    background: linear-gradient(135deg, #00f2c4 0%, #18d6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+h3 {
+    margin: 0 0 26px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--accent-light);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.input-group {
+    display: grid;
+    gap: 16px;
     margin-bottom: 20px;
-    background-color: #ddd; /* Shows if image is missing */
 }
 
-h1 { margin: 0 0 5px 0; color: #000; }
-h3 { margin: 0 0 20px 0; color: #555; }
-
-button { 
-    background: #000; color: #fff; padding: 15px; width: 100%; 
-    border: none; cursor: pointer; border-radius: 8px; font-size: 16px; font-weight: bold;
-}
-button:hover { background: #333; }
-
-input, select { 
-    padding: 15px; width: 100%; margin-bottom: 15px; 
-    box-sizing: border-box; border-radius: 8px; border: 1px solid #ccc;
+input,
+select,
+button {
+    width: 100%;
+    border-radius: 18px;
+    font-size: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-#ticketDisplay, #verifyResult { 
-    font-weight: bold; margin-top: 20px; font-size: 18px; padding: 15px;
-    background: #f9f9f9; border-radius: 8px; border: 1px dashed #ccc;
+input,
+select {
+    padding: 18px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-light);
+    outline: none;
+    margin-bottom: 18px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+select {
+    color: #061118;
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+select option {
+    color: #061118;
+    background: #fff;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.65);
+}
+
+input:focus,
+select:focus {
+    border-color: rgba(0, 242, 196, 0.8);
+    box-shadow: 0 0 0 4px rgba(0, 242, 196, 0.12);
+    transform: translateY(-1px);
+}
+
+button {
+    padding: 18px 24px;
+    background: linear-gradient(135deg, #00f2c4 0%, #ff6c2d 100%);
+    color: #061118;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    box-shadow: 0 16px 36px rgba(0, 242, 196, 0.18);
+}
+
+.secondary-button {
+    margin-top: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-light);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
+}
+
+.secondary-button:hover,
+.secondary-button:focus {
+    background: rgba(255, 255, 255, 0.14);
+    transform: translateY(-1px);
+}
+
+button:hover,
+button:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 20px 44px rgba(0, 242, 196, 0.26);
+}
+
+#ticketDisplay,
+#verifyResult {
+    margin-top: 24px;
+    padding: 22px 20px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--text-light);
+    text-align: left;
+    line-height: 1.55;
+}
+
+#ticketDisplay span {
+    display: block;
+}
+
+#ticketDisplay span:last-child {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+@media (max-width: 680px) {
+    body {
+        padding: 16px;
+    }
+
+    .container {
+        padding: 24px;
+        border-radius: 22px;
+    }
+
+    .flyer-placeholder {
+        max-height: 260px;
+        margin-bottom: 22px;
+    }
+
+    h1 {
+        font-size: clamp(2rem, 7vw, 2.6rem);
+    }
+
+    input,
+    select,
+    button {
+        font-size: 0.98rem;
+        border-radius: 16px;
+    }
+}
+
+@media (max-width: 420px) {
+    .container {
+        padding: 20px;
+    }
+
+    input,
+    select,
+    button {
+        padding: 16px 18px;
+    }
+
+    #ticketDisplay,
+    #verifyResult {
+        padding: 18px;
+    }
 }

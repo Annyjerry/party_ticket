@@ -12,7 +12,12 @@
     <div class="container">
         <img src="assets/flyer.jpg" alt="Party Flyer" class="flyer-placeholder" onerror="this.style.display='none'">
 
-        <h1>Party with sadly happy</h1>
+        <h1>
+            <span class="title-party">Party</span>
+            <span class="title-with">with</span>
+            <span class="title-sadly">sadly</span>
+            <span class="title-happy">happy</span>
+        </h1>
         <h3>July 5th, 2026</h3>
         
         <input type="email" id="email" placeholder="Enter your email" required>
@@ -23,6 +28,7 @@
         </select>
         
         <button onclick="payWithPaystack()">Purchase Ticket</button>
+        <button type="button" class="secondary-button" onclick="openAdmin()">Check Ticket</button>
         <div id="ticketDisplay" style="display:none;"></div>
     </div>
 
@@ -67,6 +73,10 @@
                 onClose: function() { alert('Transaction cancelled.'); }
             });
             handler.openIframe();
+        }
+
+        function openAdmin() {
+            window.location.href = 'admin.html';
         }
     </script>
 </body>
