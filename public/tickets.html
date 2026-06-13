@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Ticket - Party with sadly happy</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+</head>
+<body>
+    <div class="container">
+        <img src="assets/flyer.jpg" alt="Party Flyer" class="flyer-placeholder" onerror="this.style.display='none'">
+
+        <h1>
+            <span class="title-party">Party</span>
+            <span class="title-with">with</span>
+            <span class="title-sadly">sadly</span>
+            <span class="title-happy">happy</span>
+        </h1>
+        <h3>July 5th, 2026</h3>
+        
+        <input type="email" id="email" placeholder="Enter your email" required>
+        <p class="ticket-description">Gate Pass — ₦2,000</p>
+        <input type="hidden" id="ticketType" value="Gate Pass" data-price="2000">
+        <button onclick="payWithPaystack()">Purchase Gate Pass</button>
+        <button type="button" class="secondary-button" onclick="openAdmin()">Check Ticket</button>
+        <div id="ticketDisplay" style="display:none;"></div>
+    </div>
+
+    <script>
+        const PAYSTACK_PUBLIC_KEY = 'pk_test_your_public_key_here';
+
+        function payWithPaystack() {
+            const email = document.getElementById('email').value;
+            const ticket = document.getElementById('ticketType');
+            const type = ticket.value;
+            const price = Number(ticket.dataset.price) * 100;
+
+            if(!email) return alert('Please enter your email');
+
+            let handler = PaystackPop.setup({
+                key: PAYSTACK_PUBLIC_KEY,
+                email: email,
+                amount: price,
+                currency: 'NGN',
+                callback: function(response) {
+                    fetch('/verify-payment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ reference: response.reference, ticketType: type })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        const display = document.getElementById('ticketDisplay');
+                        display.style.display = 'block';
+                        if(data.success) {
+                            display.innerHTML = `
+                                <span style="color: green;">Payment Successful!</span><br>
+                                Your ${data.type} ID:<br>
+                                <span style="font-size: 28px; color: #000; letter-spacing: 2px;">${data.ticketId}</span><br>
+                                <small>Please screenshot this for the gate!</small>`;
+                        } else {
+                            display.innerHTML = `<span style="color: red;">${data.error}</span>`;
+                        }
+                    });
+                },
+                onClose: function() { alert('Transaction cancelled.'); }
+            });
+            handler.openIframe();
+        }
+
+        function openAdmin() {
+            window.location.href = 'admin.html';
+        }
+    </script>
+</body>
+</html>

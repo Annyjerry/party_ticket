@@ -4,80 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Party with sadly happy</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <link rel="stylesheet" href="landing.css">
 </head>
 <body>
+    <div class="background-overlay"></div>
 
-    <div class="container">
-        <img src="assets/flyer.jpg" alt="Party Flyer" class="flyer-placeholder" onerror="this.style.display='none'">
+    <div class="landing-container">
+        <header class="glass-card event-header">
+            <h1>Party with sadly happy</h1>
+            <p class="subtitle">An Exclusive Celebration</p>
+            <p class="date-location">Akwa Ibom, Nigeria | July 5, 2026</p>
+        </header>
 
-        <h1>
-            <span class="title-party">Party</span>
-            <span class="title-with">with</span>
-            <span class="title-sadly">sadly</span>
-            <span class="title-happy">happy</span>
-        </h1>
-        <h3>July 5th, 2026</h3>
-        
-        <input type="email" id="email" placeholder="Enter your email" required>
-        <select id="ticketType">
-            <option value="Regular" data-price="5000">Regular - ₦5,000</option>
-            <option value="VIP" data-price="20000">VIP - ₦20,000</option>
-            <option value="Executive" data-price="50000">Executive - ₦50,000</option>
-        </select>
-        
-        <button onclick="payWithPaystack()">Purchase Ticket</button>
-        <button type="button" class="secondary-button" onclick="openAdmin()">Check Ticket</button>
-        <div id="ticketDisplay" style="display:none;"></div>
+        <section class="glass-card info-section">
+            <div class="info-block">
+                <h3>The Purpose</h3>
+                <p>A night dedicated to honoring local achievements, fostering meaningful connections within our community, and creating paths for collective celebration.</p>
+            </div>
+            
+            <div class="info-block">
+                <h3>The Organizer</h3>
+                <p>Proudly presented by the Akwa Ibom Developers Collective and partners, committed to building a thriving tech and lifestyle ecosystem.</p>
+            </div>
+
+            <div class="info-block">
+                <h3>Night's Features</h3>
+                <ul class="features-list">
+                    <li>✨ Renowned Guest Speakers & Developers</li>
+                    <li>🎶 Live Music & Cultural Performances</li>
+                    <li>🥂 VIP Networking Lounge</li>
+                    <li>📸 Red Carpet Experience</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="cta-section">
+            <a href="tickets.html" class="cta-button">PURCHASE TICKETS →</a>
+        </div>
     </div>
 
-    <script>
-        // Replace with your ACTUAL Paystack Public Key
-        const PAYSTACK_PUBLIC_KEY = 'pk_test_your_public_key_here';
-
-        function payWithPaystack() {
-            const email = document.getElementById('email').value;
-            const select = document.getElementById('ticketType');
-            const type = select.value;
-            const price = select.options[select.selectedIndex].getAttribute('data-price') * 100;
-
-            if(!email) return alert('Please enter your email');
-
-            let handler = PaystackPop.setup({
-                key: PAYSTACK_PUBLIC_KEY,
-                email: email,
-                amount: price,
-                currency: 'NGN',
-                callback: function(response) {
-                    fetch('/verify-payment', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ reference: response.reference, ticketType: type })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        const display = document.getElementById('ticketDisplay');
-                        display.style.display = 'block';
-                        if(data.success) {
-                            display.innerHTML = `
-                                <span style="color: green;">Payment Successful!</span><br>
-                                Your ${data.type} ID:<br>
-                                <span style="font-size: 28px; color: #000; letter-spacing: 2px;">${data.ticketId}</span><br>
-                                <small>Please screenshot this for the gate!</small>`;
-                        } else {
-                            display.innerHTML = `<span style="color: red;">${data.error}</span>`;
-                        }
-                    });
-                },
-                onClose: function() { alert('Transaction cancelled.'); }
-            });
-            handler.openIframe();
-        }
-
-        function openAdmin() {
-            window.location.href = 'admin.html';
-        }
-    </script>
+    <footer class="glass-card event-footer" style="max-width: 800px; margin: 0 auto 40px auto; position: relative; z-index: 2;">
+        <p><strong>FOR ENQUIRIES</strong></p>
+        <p>For general questions or partnership opportunities:<br>enquire@sadlyhappy.com | +234-700-123-4567</p>
+        <p>&copy; 2026 Party with sadly happy | All Rights Reserved | Akwa Ibom.</p>
+    </footer>
 </body>
 </html>

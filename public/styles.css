@@ -127,6 +127,14 @@ h3 {
     text-transform: uppercase;
 }
 
+.ticket-description {
+    margin: 20px 0 24px;
+    font-size: 1.05rem;
+    color: #f3f3f3;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
 .input-group {
     display: grid;
     gap: 16px;
