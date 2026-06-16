@@ -3,37 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Gate Admin</title>
+    <title>Gate Security Scanner</title>
     <link rel="stylesheet" href="landing.css">
     <style>
+        :root {
+            --primary-teal: #00f2c4;
+            --accent-orange: #ff6c2d;
+            --light-gold: #ffdca4;
+            --dark-bg: #060b12;
+            --text-light: #f7fbff;
+            --text-muted: #b8dfe8;
+        }
+
         .hidden { display: none !important; }
-        .admin-box { background: rgba(0, 0, 0, 0.8); color: white; border: 1px solid #444; }
-        .input-dark { background: #222; color: white; border: 1px solid #555; }
+
+        .admin-container {
+            position: relative;
+            z-index: 2;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 60px 20px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .admin-card {
+            background: rgba(0, 242, 196, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 242, 196, 0.25);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            box-sizing: border-box;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(0, 242, 196, 0.15), transparent 35%),
+                        radial-gradient(circle at bottom left, rgba(255, 108, 45, 0.15), transparent 30%);
+            pointer-events: none;
+        }
+
+        .admin-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .admin-card h2 {
+            text-align: center;
+            margin: 0 0 12px 0;
+            font-size: 2.2rem;
+            letter-spacing: -0.5px;
+            color: var(--text-light);
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .admin-card .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 28px;
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(0, 242, 196, 0.3);
+            border-radius: 12px;
+            color: var(--text-light);
+            font-size: 1.05rem;
+            font-family: 'Inter', sans-serif;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .admin-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .admin-input:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+            background: rgba(0, 242, 196, 0.12);
+            box-shadow: 0 0 16px rgba(0, 242, 196, 0.2);
+        }
+
+        .admin-input:focus::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .admin-button {
+            width: 100%;
+            padding: 16px 24px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--primary-teal) 0%, rgba(0, 242, 196, 0.9) 100%);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(0, 242, 196, 0.25);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .admin-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 242, 196, 0.35);
+        }
+
+        .admin-button:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 12px rgba(0, 242, 196, 0.25);
+        }
+
+        .admin-button.logout-btn {
+            background: linear-gradient(135deg, var(--accent-orange) 0%, rgba(255, 108, 45, 0.9) 100%);
+            box-shadow: 0 8px 24px rgba(255, 108, 45, 0.25);
+            margin-bottom: 0;
+        }
+
+        .admin-button.logout-btn:hover {
+            box-shadow: 0 12px 32px rgba(255, 108, 45, 0.35);
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            text-align: center;
+            margin-top: 16px;
+            display: none;
+            padding: 12px;
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            animation: slideDown 0.3s ease;
+        }
+
+        .verify-result {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            animation: slideDown 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .verify-result.valid {
+            background: rgba(0, 242, 196, 0.15);
+            border: 1px solid rgba(0, 242, 196, 0.4);
+            color: var(--primary-teal);
+        }
+
+        .verify-result.used {
+            background: rgba(255, 193, 7, 0.15);
+            border: 1px solid rgba(255, 193, 7, 0.4);
+            color: #ffc107;
+        }
+
+        .verify-result.invalid {
+            background: rgba(255, 107, 107, 0.15);
+            border: 1px solid rgba(255, 107, 107, 0.4);
+            color: #ff6b6b;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.active {
+            background: var(--primary-teal);
+            box-shadow: 0 0 10px rgba(0, 242, 196, 0.6);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @media (max-width: 600px) {
+            .admin-container {
+                padding: 40px 16px 16px 16px;
+            }
+
+            .admin-card {
+                padding: 28px 20px;
+            }
+
+            .admin-card h2 {
+                font-size: 1.8rem;
+            }
+
+            .admin-button {
+                padding: 14px 20px;
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
 
     <div class="background-overlay"></div>
 
-    <div class="landing-container">
+    <div class="admin-container">
         
-        <div id="loginScreen" class="glass-card admin-box" style="max-width: 400px;">
-            <h2 style="text-align: center; margin-top: 0;">🔒 Security Lock</h2>
-            <p style="text-align: center; color: #aaa;">Enter the gate password to access the scanner.</p>
+        <div id="loginScreen" class="admin-card">
+            <h2>🔒 Security Gate</h2>
+            <p class="subtitle">Enter password to access the scanner</p>
             
-            <input type="password" id="adminPassword" class="input-dark" placeholder="Enter Password">
-            <button onclick="login()" class="cta-button" style="width: 100%; border-radius: 8px;">UNLOCK SCANNER</button>
-            <div id="loginError" style="color: #ff4d4d; text-align: center; margin-top: 15px; display: none;"></div>
+            <input type="password" id="adminPassword" class="admin-input" placeholder="Enter Gate Password" autocomplete="off">
+            <button onclick="login()" class="admin-button">UNLOCK SCANNER</button>
+            <div id="loginError" class="error-message"></div>
         </div>
 
-        <div id="scannerScreen" class="glass-card admin-box hidden" style="max-width: 400px;">
-            <h2 style="text-align: center; margin-top: 0; color: #4CAF50;">✅ Scanner Active</h2>
-            <p style="text-align: center; color: #aaa;">Verify tickets before granting entry.</p>
+        <div id="scannerScreen" class="admin-card hidden">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px;">
+                <span class="status-indicator active"></span>
+                <h2 style="margin: 0;">Scanner Active</h2>
+            </div>
+            <p class="subtitle">Scan ticket ID to verify entry</p>
             
-            <input type="text" id="scanCode" class="input-dark" placeholder="Enter Ticket ID (e.g. VIP-8A9C2)" style="text-transform: uppercase;">
-            <button onclick="verifyTicket()" class="cta-button" style="width: 100%; border-radius: 8px;">VERIFY TICKET</button>
+            <input type="text" id="scanCode" class="admin-input" placeholder="Enter Ticket ID (e.g. VIP-8A9C2)" autocomplete="off" style="text-transform: uppercase;">
+            <button onclick="verifyTicket()" class="admin-button">VERIFY TICKET</button>
+            <button onclick="logout()" class="admin-button logout-btn">EXIT SCANNER</button>
             
-            <div id="verifyResult" style="display:none; text-align: center; margin-top: 20px; font-weight: bold; padding: 15px; border-radius: 8px; background: #222;"></div>
+            <div id="verifyResult" class="verify-result"></div>
         </div>
 
     </div>
@@ -46,7 +274,11 @@
             const passInput = document.getElementById('adminPassword').value;
             const errorDiv = document.getElementById('loginError');
 
-            if(!passInput) return;
+            if(!passInput) {
+                errorDiv.innerText = 'Please enter a password';
+                errorDiv.style.display = 'block';
+                return;
+            }
 
             fetch('/admin-login', {
                 method: 'POST',
@@ -60,16 +292,30 @@
                     activePassword = passInput;
                     document.getElementById('loginScreen').classList.add('hidden');
                     document.getElementById('scannerScreen').classList.remove('hidden');
+                    document.getElementById('scanCode').focus();
+                    errorDiv.style.display = 'none';
                 } else {
-                    errorDiv.innerText = data.message;
+                    errorDiv.innerText = data.message || 'Invalid password';
                     errorDiv.style.display = 'block';
+                    document.getElementById('adminPassword').value = '';
                 }
+            })
+            .catch(err => {
+                errorDiv.innerText = 'Connection error. Please try again.';
+                errorDiv.style.display = 'block';
             });
         }
 
         function verifyTicket() {
             const ticketId = document.getElementById('scanCode').value.trim().toUpperCase();
-            if(!ticketId) return alert('Enter a ticket ID');
+            const resultDiv = document.getElementById('verifyResult');
+            
+            if(!ticketId) {
+                resultDiv.innerText = '⚠️ Please enter a ticket ID';
+                resultDiv.className = 'verify-result used';
+                resultDiv.style.display = 'block';
+                return;
+            }
 
             fetch('/check-ticket', {
                 method: 'POST',
@@ -79,21 +325,47 @@
             })
             .then(res => res.json())
             .then(data => {
-                const resultDiv = document.getElementById('verifyResult');
                 resultDiv.style.display = 'block';
                 
                 if(data.status === 'VALID') {
-                    resultDiv.innerHTML = `<span style="color: #4CAF50; font-size: 22px;">✅ ${data.message}</span>`;
+                    resultDiv.innerHTML = `<span style="font-size: 1.3rem;">✅ ${data.message}</span>`;
+                    resultDiv.className = 'verify-result valid';
                 } else if (data.status === 'USED') {
-                    resultDiv.innerHTML = `<span style="color: #ff9800; font-size: 18px;">⚠️ ${data.message}</span>`;
+                    resultDiv.innerHTML = `<span>⚠️ ${data.message}</span>`;
+                    resultDiv.className = 'verify-result used';
                 } else {
-                    resultDiv.innerHTML = `<span style="color: #f44336; font-size: 18px;">❌ ${data.message}</span>`;
+                    resultDiv.innerHTML = `<span>❌ ${data.message}</span>`;
+                    resultDiv.className = 'verify-result invalid';
                 }
                 
                 // Clear input for the next person in line
                 document.getElementById('scanCode').value = '';
+                document.getElementById('scanCode').focus();
+            })
+            .catch(err => {
+                resultDiv.innerHTML = '<span>❌ Error verifying ticket</span>';
+                resultDiv.className = 'verify-result invalid';
+                resultDiv.style.display = 'block';
             });
         }
+
+        function logout() {
+            activePassword = '';
+            document.getElementById('scannerScreen').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminPassword').focus();
+        }
+
+        // Allow Enter key to trigger login
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+                if(e.key === 'Enter') login();
+            });
+            document.getElementById('scanCode').addEventListener('keypress', function(e) {
+                if(e.key === 'Enter') verifyTicket();
+            });
+        });
     </script>
 </body>
 </html>
