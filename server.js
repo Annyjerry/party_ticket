@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const { Pool } = require('pg'); // Changed from sqlite3 to pg
+const { Pool } = require('pg'); 
 const cors = require('cors');
 const crypto = require('crypto');
 const axios = require('axios');
@@ -29,6 +29,7 @@ pool.query(`CREATE TABLE IF NOT EXISTS tickets (
 )`).catch(err => console.error("Database Setup Error:", err));
 
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 // --- GENERATE TICKET AFTER PAYMENT ---
 app.post('/verify-payment', async (req, res) => {
@@ -62,9 +63,24 @@ app.post('/verify-payment', async (req, res) => {
     }
 });
 
-// --- VERIFY TICKET AT THE GATE ---
+// --- LOGIN FOR ADMIN PAGE ---
+app.post('/admin-login', (req, res) => {
+    const { password } = req.body;
+    if (password === ADMIN_PASSWORD) {
+        res.json({ success: true });
+    } else {
+        res.status(401).json({ success: false, message: 'Incorrect Password' });
+    }
+});
+
+// --- VERIFY TICKET AT THE GATE (SECURED) ---
 app.post('/check-ticket', async (req, res) => {
-    const { ticketId } = req.body;
+    const { ticketId, password } = req.body;
+
+    // Security Check: Block unauthorized requests
+    if (password !== ADMIN_PASSWORD) {
+        return res.status(401).json({ status: 'ERROR', message: 'Unauthorized: Bad Password' });
+    }
 
     try {
         const result = await pool.query(`SELECT * FROM tickets WHERE ticket_id = $1`, [ticketId]);
@@ -82,5 +98,6 @@ app.post('/check-ticket', async (req, res) => {
     }
 });
 
+// --- START THE SERVER ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

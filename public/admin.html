@@ -3,22 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gate Admin - Party with sadly happy</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Secure Gate Admin</title>
+    <link rel="stylesheet" href="landing.css">
+    <style>
+        .hidden { display: none !important; }
+        .admin-box { background: rgba(0, 0, 0, 0.8); color: white; border: 1px solid #444; }
+        .input-dark { background: #222; color: white; border: 1px solid #555; }
+    </style>
 </head>
 <body>
 
-    <div class="container" style="max-width: 400px;">
-        <h2>Gate Scanner</h2>
-        <p>Verify tickets before granting entry.</p>
+    <div class="background-overlay"></div>
+
+    <div class="landing-container">
         
-        <input type="text" id="scanCode" placeholder="Enter Ticket ID (e.g. VIP-8A9C2)" style="text-transform: uppercase;">
-        <button onclick="verifyTicket()">Verify Ticket</button>
-        
-        <div id="verifyResult" style="display:none;"></div>
+        <div id="loginScreen" class="glass-card admin-box" style="max-width: 400px;">
+            <h2 style="text-align: center; margin-top: 0;">🔒 Security Lock</h2>
+            <p style="text-align: center; color: #aaa;">Enter the gate password to access the scanner.</p>
+            
+            <input type="password" id="adminPassword" class="input-dark" placeholder="Enter Password">
+            <button onclick="login()" class="cta-button" style="width: 100%; border-radius: 8px;">UNLOCK SCANNER</button>
+            <div id="loginError" style="color: #ff4d4d; text-align: center; margin-top: 15px; display: none;"></div>
+        </div>
+
+        <div id="scannerScreen" class="glass-card admin-box hidden" style="max-width: 400px;">
+            <h2 style="text-align: center; margin-top: 0; color: #4CAF50;">✅ Scanner Active</h2>
+            <p style="text-align: center; color: #aaa;">Verify tickets before granting entry.</p>
+            
+            <input type="text" id="scanCode" class="input-dark" placeholder="Enter Ticket ID (e.g. VIP-8A9C2)" style="text-transform: uppercase;">
+            <button onclick="verifyTicket()" class="cta-button" style="width: 100%; border-radius: 8px;">VERIFY TICKET</button>
+            
+            <div id="verifyResult" style="display:none; text-align: center; margin-top: 20px; font-weight: bold; padding: 15px; border-radius: 8px; background: #222;"></div>
+        </div>
+
     </div>
 
     <script>
+        // This variable will hold the password while the bouncer is using the page
+        let activePassword = '';
+
+        function login() {
+            const passInput = document.getElementById('adminPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            if(!passInput) return;
+
+            fetch('/admin-login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: passInput })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    // Password is correct! Save it and switch screens
+                    activePassword = passInput;
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('scannerScreen').classList.remove('hidden');
+                } else {
+                    errorDiv.innerText = data.message;
+                    errorDiv.style.display = 'block';
+                }
+            });
+        }
+
         function verifyTicket() {
             const ticketId = document.getElementById('scanCode').value.trim().toUpperCase();
             if(!ticketId) return alert('Enter a ticket ID');
@@ -26,7 +74,8 @@
             fetch('/check-ticket', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ticketId })
+                // Notice we are sending the password with the ticket!
+                body: JSON.stringify({ ticketId: ticketId, password: activePassword })
             })
             .then(res => res.json())
             .then(data => {
@@ -34,14 +83,14 @@
                 resultDiv.style.display = 'block';
                 
                 if(data.status === 'VALID') {
-                    resultDiv.innerHTML = `<span style="color: green; font-size: 22px;">✅ ${data.message}</span>`;
+                    resultDiv.innerHTML = `<span style="color: #4CAF50; font-size: 22px;">✅ ${data.message}</span>`;
                 } else if (data.status === 'USED') {
-                    resultDiv.innerHTML = `<span style="color: orange; font-size: 18px;">⚠️ ${data.message}</span>`;
+                    resultDiv.innerHTML = `<span style="color: #ff9800; font-size: 18px;">⚠️ ${data.message}</span>`;
                 } else {
-                    resultDiv.innerHTML = `<span style="color: red; font-size: 18px;">❌ ${data.message}</span>`;
+                    resultDiv.innerHTML = `<span style="color: #f44336; font-size: 18px;">❌ ${data.message}</span>`;
                 }
                 
-                // Clear input for the next person
+                // Clear input for the next person in line
                 document.getElementById('scanCode').value = '';
             });
         }
