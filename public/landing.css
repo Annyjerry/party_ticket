@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lexend:wght@600;700&display=swap');
 
 body, html {
     margin: 0;
@@ -6,7 +6,7 @@ body, html {
     width: 100%;
     min-height: 100vh;
     font-family: 'Inter', sans-serif;
-    /* This loads your image and keeps it fixed while scrolling */
+    line-height: 1.65;
     background-image: url('assets/background.png');
     background-size: cover;
     background-position: center;
@@ -55,29 +55,32 @@ body, html {
 .event-header { text-align: center; }
 
 .event-header h1 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Lexend', sans-serif;
     font-size: 3.5rem;
     margin: 0 0 10px 0;
-    letter-spacing: 2px;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
+    font-weight: 800;
 }
 
 .subtitle {
-    font-size: 1.2rem;
-    font-weight: 300;
-    letter-spacing: 4px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     margin-bottom: 20px;
     color: #d4d4d4;
 }
 
 .date-location {
-    font-size: 1.1rem;
-    font-weight: 600;
-    border-top: 1px solid rgba(255,255,255,0.2);
-    border-bottom: 1px solid rgba(255,255,255,0.2);
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    border-bottom: 1px solid rgba(255,255,255,0.15);
     display: inline-block;
-    padding: 10px 20px;
+    padding: 10px 24px;
+    color: rgba(255,255,255,0.82);
 }
 
 .info-section { text-align: center; }
@@ -86,47 +89,60 @@ body, html {
 .info-block:last-child { margin-bottom: 0; }
 
 .info-block h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
+    font-family: 'Lexend', sans-serif;
+    font-size: 1.4rem;
     color: #ffda79;
     margin-bottom: 15px;
-    letter-spacing: 1px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    text-shadow: 0 2px 12px rgba(255, 218, 121, 0.18);
 }
 
 .info-block p {
-    line-height: 1.75;
+    line-height: 1.8;
     color: #e9e9ea;
     margin: 0;
-    font-size: 1.06rem;
+    font-size: 1.05rem;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.02em;
 }
 
 .features-list {
     list-style: none;
     padding: 0;
     margin: 0;
-    display: inline-block;
-    text-align: left;
+    display: grid;
+    gap: 10px;
     width: 100%;
 }
 
 .features-list li {
-    font-size: 1.1rem;
-    margin-bottom: 14px;
+    font-size: 1.05rem;
+    margin: 0;
     color: #f6f6f7;
-    padding-left: 26px;
-    position: relative;
+    display: block;
+    padding: 10px 0;
+    letter-spacing: 0.02em;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    opacity: 0;
+    transform: translateX(-10px);
+    animation: featureFadeIn 0.8s ease forwards;
 }
 
-.features-list li::before {
-    content: '•';
-    position: absolute;
-    left: 0;
-    top: 0;
-    color: #ffcc4d;
-    font-size: 1.3rem;
-    line-height: 1;
+.features-list li:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    transform: translateX(2px);
+}
+
+.features-list li:nth-child(1) { animation-delay: 0s; }
+.features-list li:nth-child(2) { animation-delay: 1s; }
+.features-list li:nth-child(3) { animation-delay: 2s; }
+.features-list li:nth-child(4) { animation-delay: 3s; }
+.features-list li:nth-child(5) { animation-delay: 4s; }
+
+@keyframes featureFadeIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
 }
 
 .cta-section {
@@ -138,24 +154,24 @@ body, html {
 
 .cta-button {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.95);
-    color: #111111;
-    padding: 18px 44px;
-    font-size: 1.2rem;
-    font-weight: 700;
+    background: linear-gradient(135deg, #00f2c4 0%, #ff6c2d 100%);
+    color: #061118;
+    padding: 16px 42px;
+    font-size: 1.1rem;
+    font-weight: 800;
     text-decoration: none;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    transition: all 0.3s ease;
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+    letter-spacing: 0.18em;
+    box-shadow: 0 22px 44px rgba(0, 242, 196, 0.18);
 }
 
 .cta-button:hover {
-    background: rgba(255, 255, 255, 1);
-    transform: translateY(-4px);
-    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.24);
+    opacity: 0.95;
+    transform: translateY(-2px);
+    box-shadow: 0 26px 50px rgba(0, 242, 196, 0.24);
 }
 
 .event-footer {

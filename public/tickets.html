@@ -31,7 +31,6 @@
 
     <script>
         const PAYSTACK_PUBLIC_KEY = 'pk_live_ec5bbe6ffd52d09c51e75d2f79cc3bd97901d113';
-        
 
         function payWithPaystack() {
             const email = document.getElementById('email').value;
@@ -51,7 +50,8 @@
                     fetch('/verify-payment', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ reference: response.reference, ticketType: type })
+                        // 👇 THIS IS THE LINE WE UPDATED 👇
+                        body: JSON.stringify({ reference: response.reference, ticketType: type, email: email })
                     })
                     .then(res => res.json())
                     .then(data => {
@@ -62,7 +62,7 @@
                                 <span style="color: green;">Payment Successful!</span><br>
                                 Your ${data.type} ID:<br>
                                 <span style="font-size: 28px; color: #000; letter-spacing: 2px;">${data.ticketId}</span><br>
-                                <small>Please screenshot this for the gate!</small>`;
+                                <small>We have also sent a copy to your email!</small>`; // Updated success text
                         } else {
                             display.innerHTML = `<span style="color: red;">${data.error}</span>`;
                         }
