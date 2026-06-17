@@ -46,6 +46,7 @@
                 email: email,
                 amount: price,
                 currency: 'NGN',
+                channels: ['bank_transfer', 'card'], 
                 callback: function(response) {
                     fetch('/verify-payment', {
                         method: 'POST',
