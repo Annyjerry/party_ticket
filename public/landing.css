@@ -14,16 +14,16 @@ body, html {
     color: #ffffff;
 }
 
-/* This adds the dark, blurred overlay directly over your background image */
+/* This adds the dark, softened overlay directly over your background image */
 .background-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     z-index: 1;
 }
 

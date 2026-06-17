@@ -10,16 +10,14 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Serve the frontend files from the "public" directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- SECURE CLOUD DATABASE SETUP ---
+// --- DATABASE SETUP ---
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false } // Required for Render
+    ssl: { rejectUnauthorized: false } 
 });
 
-// Create the tickets table if it doesn't exist
 pool.query(`CREATE TABLE IF NOT EXISTS tickets (
     ticket_id VARCHAR(50) PRIMARY KEY,
     type VARCHAR(50),
@@ -31,10 +29,9 @@ pool.query(`CREATE TABLE IF NOT EXISTS tickets (
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
-// --- GENERATE TICKET AFTER PAYMENT ---
+// --- GENERATE TICKET ---
 app.post('/verify-payment', async (req, res) => {
     const { reference, ticketType } = req.body;
-
     try {
         const paystackRes = await axios.get(`https://api.paystack.co/transaction/verify/${reference}`, {
             headers: { Authorization: `Bearer ${PAYSTACK_SECRET_KEY}` }
@@ -46,7 +43,6 @@ app.post('/verify-payment', async (req, res) => {
             const ticketId = `${prefix}-${randomString}`;
 
             try {
-                // Save to Postgres
                 await pool.query(
                     `INSERT INTO tickets (ticket_id, type, reference) VALUES ($1, $2, $3)`, 
                     [ticketId, ticketType, reference]
@@ -63,7 +59,7 @@ app.post('/verify-payment', async (req, res) => {
     }
 });
 
-// --- LOGIN FOR ADMIN PAGE ---
+// --- ADMIN LOGIN ---
 app.post('/admin-login', (req, res) => {
     const { password } = req.body;
     if (password === ADMIN_PASSWORD) {
@@ -73,11 +69,10 @@ app.post('/admin-login', (req, res) => {
     }
 });
 
-// --- VERIFY TICKET AT THE GATE (SECURED) ---
+// --- VERIFY TICKET (GATE) ---
 app.post('/check-ticket', async (req, res) => {
     const { ticketId, password } = req.body;
 
-    // Security Check: Block unauthorized requests
     if (password !== ADMIN_PASSWORD) {
         return res.status(401).json({ status: 'ERROR', message: 'Unauthorized: Bad Password' });
     }
@@ -98,6 +93,28 @@ app.post('/check-ticket', async (req, res) => {
     }
 });
 
-// --- START THE SERVER ---
+// --- RECOVER LOST TICKET BY REFERENCE ---
+app.post('/search-reference', async (req, res) => {
+    const { reference, password } = req.body;
+
+    if (password !== ADMIN_PASSWORD) {
+        return res.status(401).json({ status: 'ERROR', message: 'Unauthorized' });
+    }
+
+    try {
+        const result = await pool.query(`SELECT ticket_id, type, status FROM tickets WHERE reference = $1`, [reference]);
+        const row = result.rows[0];
+
+        if (!row) {
+            return res.json({ found: false, message: 'No ticket found for this Paystack reference.' });
+        }
+
+        res.json({ found: true, ticketId: row.ticket_id, type: row.type, status: row.status });
+    } catch (err) {
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+// --- START SERVER ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
