@@ -40,6 +40,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+
 // --- GENERATE TICKET & SEND EMAIL ---
 app.post('/verify-payment', async (req, res) => {
     // We now receive the user's email from the frontend
@@ -63,7 +64,7 @@ app.post('/verify-payment', async (req, res) => {
                 );
 
                 // 2. Send the Email
-                const partyVenue = "The Grand Synergy Hall, Uyo, Akwa Ibom, Nigeria"; // Update your venue here!
+                const partyVenue = "Perly gate residence -Party House paradise"; // Update your venue here!
                 
                 const mailOptions = {
                     from: `"Party with sadly happy" <${process.env.EMAIL_USER}>`,
@@ -85,7 +86,7 @@ app.post('/verify-payment', async (req, res) => {
                             <p><strong>Venue:</strong> ${partyVenue}</p>
                             
                             <p style="color: #777; font-size: 0.9em; text-align: center; margin-top: 30px;">
-                                Please screenshot this email or have it open on your phone at the gate. Do not share this Ticket ID with anyone.
+                                <strong>Please screenshot this or copy the Ticket ID and save it securely.</strong> Do not share this Ticket ID with anyone.
                             </p>
                         </div>
                     `
@@ -97,7 +98,7 @@ app.post('/verify-payment', async (req, res) => {
                 });
 
                 // 3. Respond to the Frontend
-                res.json({ success: true, ticketId, type: ticketType });
+                res.json({ success: true, ticketId, type: ticketType, venue: partyVenue });
 
             } catch (dbErr) {
                 res.status(400).json({ error: 'Ticket already generated for this payment.' });

@@ -59,10 +59,12 @@
                         display.style.display = 'block';
                         if(data.success) {
                             display.innerHTML = `
-                                <span style="color: green;">Payment Successful!</span><br>
-                                Your ${data.type} ID:<br>
-                                <span style="font-size: 28px; color: #000; letter-spacing: 2px;">${data.ticketId}</span><br>
-                                <small>We have also sent a copy to your email!</small>`; // Updated success text
+                                <span style="color: green; font-weight: 700;">Payment Successful!</span><br>
+                                <p style="margin: 8px 0 2px;">Your ${data.type} ID:</p>
+                                <span style="font-size: 28px; color: #000; letter-spacing: 2px; display: inline-block; margin-bottom: 8px;">${data.ticketId}</span><br>
+                                <p style="margin: 8px 0 0;"><strong>Venue:</strong> ${data.venue}</p>
+                                <p style="margin: 12px 0 0; font-weight: 700;">Screenshot or copy this Ticket ID and save it securely.</p>
+                                <small>We have also sent a copy to your email.</small>`;
                         } else {
                             display.innerHTML = `<span style="color: red;">${data.error}</span>`;
                         }

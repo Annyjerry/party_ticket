@@ -3,58 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Party with the sadly happy</title>
+    <title>Party With The Sadly Happy</title>
     <link rel="icon" type="image/png" href="assets/background.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lexend:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="landing.css">
+
 </head>
 <body>
-    <div class="background-overlay"></div>
 
-    <div class="landing-container">
-        <header class="glass-card event-header">
-            <h1>Party with the sadly happy</h1>
-            <p class="subtitle">An Exclusive Party</p>
-            <p class="date-location">Akwa Ibom, Nigeria | July 5, 2026</p>
-        </header>
-
-        <section class="glass-card info-section">
-            <div class="info-block">
-                <h3>The Purpose</h3>
-                <p>A party for everyone where the heart can heal, the music can speak and happiness can 
-                    exist alongside sadness, if you’ve 
-                    been through something but still choose joy-this party is for you. <br>Organized by: <i>🐝BUSY BEE</p>
-            </div>
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <img src="assets/background.png" alt="PartyFlux Logo" class="logo-img">
             
-            <div class="info-block">
-                <p></p>
-    
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#features">Experience</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+
+        <a href="tickets.html" class="nav-btn">
+            GET TICKETS
+        </a>
+    </nav>
+
+    <section class="hero">
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <h1>
+                PARTY WITH<span> THE SADLY HAPPY</span>
+            </h1>
+
+         
+
+            <p>
+                A night where music heals, joy meets emotion,
+                and unforgettable memories are created.
+                Whether you're celebrating life or finding your
+                smile again, this experience was created for you.
+            </p>
+
+            <div class="countdown">
+
+                <div>
+                    <span id="days">00</span>
+                    <small>DAYS</small>
+                </div>
+
+                <div>
+                    <span id="hours">00</span>
+                    <small>HOURS</small>
+                </div>
+
+                <div>
+                    <span id="mins">00</span>
+                    <small>MINS</small>
+                </div>
+
+                <div>
+                    <span id="secs">00</span>
+                    <small>SECS</small>
+                </div>
+
             </div>
 
-            <div class="info-block">
-                <h3>Featuring</h3>
-                <ul class="features-list">
-                    <li>Music performance </li>
-                    <li>Dance floor </li>
-                    <li>Games</li>
-                    <li>Hype</li>
-                    <li>networking</li>
-                </ul>
+            <div class="event-date">
+                JULY 5, 2026 • AKWA IBOM, NIGERIA
             </div>
-        </section>
 
-        <div class="cta-section">
-            <a href="tickets.html" class="cta-button">PURCHASE TICKETS →</a>
+            <a href="tickets.html" class="hero-btn">
+                SECURE ENTRY PASS
+            </a>
+
         </div>
-    </div>
 
-    <footer class="glass-card event-footer" style="max-width: 800px; margin: 0 auto 40px auto; position: relative; z-index: 2;">
-        <p><strong>FOR ENQUIRIES</strong></p>
-        <p>For general questions or partnership opportunities:<br>Smizmuller@gmail.com |  +234-706-880-0596</p>
-        <p>WhatsApp +2349090681363</p>
-        <p>&copy; 2026 Party with the sadly happy | All Rights Reserved | AJ Innovations.</p>
+    </section>
+
+    <section id="about" class="section">
+
+        <div class="content-box">
+
+            <h3>THE PURPOSE</h3>
+
+            <p>
+                A party for everyone where the heart can heal,
+                the music can speak, and happiness can exist
+                alongside sadness.
+            </p>
+
+            <p>
+                If you've been through something but still choose joy,
+                this party is for you.
+            </p>
+
+            <p>
+                Organized by 🐝 BUSY BEE.
+            </p>
+
+        </div>
+
+    </section>
+
+    <section id="features" class="section dark">
+
+        <div class="content-box">
+
+            <h3>FEATURING</h3>
+
+            <ul class="feature-grid">
+                <li>Music Performances</li>
+                <li>Dance Floor</li>
+                <li>Games</li>
+                <li>Hype Sessions</li>
+                <li>Networking</li>
+            </ul>
+
+        </div>
+
+    </section>
+
+    <section id="contact" class="section">
+
+        <div class="content-box">
+
+            <h3>FOR ENQUIRIES</h3>
+
+            <p>
+                General Questions & Partnerships
+            </p>
+
+            <p>
+                Smizmuller@gmail.com
+            </p>
+
+            <p>
+                +234-706-880-0596
+            </p>
+
+            <p>
+                WhatsApp: +2349090681363
+            </p>
+
+        </div>
+
+    </section>
+
+    <footer class="footer">
+        © 2026 Party With The Sadly Happy | AJ Innovations
     </footer>
+
+    <script>
+        const targetDate = new Date(2026, 6, 5, 0, 0, 0); // July 5, 2026 local time
+
+        function updateCountdown() {
+            const now = new Date();
+            const diff = targetDate - now;
+            const daysEl = document.getElementById('days');
+            const hoursEl = document.getElementById('hours');
+            const minsEl = document.getElementById('mins');
+            const secsEl = document.getElementById('secs');
+
+            if (!daysEl || !hoursEl || !minsEl || !secsEl) return;
+
+            if (diff <= 0) {
+                daysEl.textContent = '00';
+                hoursEl.textContent = '00';
+                minsEl.textContent = '00';
+                secsEl.textContent = '00';
+                return;
+            }
+
+            const seconds = Math.floor((diff / 1000) % 60);
+            const minutes = Math.floor((diff / 1000 / 60) % 60);
+            const hours = Math.floor((diff / 1000 / 60 / 60) % 24);
+            const days = Math.floor(diff / 1000 / 60 / 60 / 24);
+
+            daysEl.textContent = String(days).padStart(2, '0');
+            hoursEl.textContent = String(hours).padStart(2, '0');
+            minsEl.textContent = String(minutes).padStart(2, '0');
+            secsEl.textContent = String(seconds).padStart(2, '0');
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+
 </body>
-</html>
