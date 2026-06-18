@@ -386,7 +386,8 @@
                     resultDiv.innerHTML = `
                         <span style="font-size: 0.9rem; color: var(--text-muted);">Ticket Found!</span><br>
                         <span style="font-size: 1.6rem; letter-spacing: 2px; color: var(--text-light);">${data.ticketId}</span><br>
-                        <span style="font-size: 0.9rem;">Type: ${data.type} | Status: ${data.status.toUpperCase()}</span>`;
+                        <span style="font-size: 0.9rem;">Type: ${data.type} | Status: ${data.status.toUpperCase()}</span><br>
+                        <span style="font-size: 0.9rem; color: var(--text-muted);">Email: ${data.email || 'Not available'}</span>`;
                 } else {
                     resultDiv.className = 'verify-result invalid';
                     resultDiv.innerHTML = `<span>❌ ${data.message}</span>`;

@@ -23,8 +23,11 @@ pool.query(`CREATE TABLE IF NOT EXISTS tickets (
     type VARCHAR(50),
     status VARCHAR(20) DEFAULT 'valid',
     used_time VARCHAR(100),
-    reference VARCHAR(100) UNIQUE
-)`).catch(err => console.error("Database Setup Error:", err));
+    reference VARCHAR(100) UNIQUE,
+    email VARCHAR(200)
+)`).then(() => {
+    return pool.query(`ALTER TABLE tickets ADD COLUMN IF NOT EXISTS email VARCHAR(200)`);
+}).catch(err => console.error("Database Setup Error:", err));
 
 const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
@@ -59,8 +62,8 @@ app.post('/verify-payment', async (req, res) => {
             try {
                 // 1. Save to Database
                 await pool.query(
-                    `INSERT INTO tickets (ticket_id, type, reference) VALUES ($1, $2, $3)`, 
-                    [ticketId, ticketType, reference]
+                    `INSERT INTO tickets (ticket_id, type, reference, email) VALUES ($1, $2, $3, $4)`, 
+                    [ticketId, ticketType, reference, email]
                 );
 
                 // 2. Send the Email
@@ -144,11 +147,11 @@ app.post('/search-reference', async (req, res) => {
     if (password !== ADMIN_PASSWORD) return res.status(401).json({ status: 'ERROR', message: 'Unauthorized' });
 
     try {
-        const result = await pool.query(`SELECT ticket_id, type, status FROM tickets WHERE reference = $1`, [reference]);
+        const result = await pool.query(`SELECT ticket_id, type, status, email FROM tickets WHERE reference = $1`, [reference]);
         const row = result.rows[0];
 
         if (!row) return res.json({ found: false, message: 'No ticket found.' });
-        res.json({ found: true, ticketId: row.ticket_id, type: row.type, status: row.status });
+        res.json({ found: true, ticketId: row.ticket_id, type: row.type, status: row.status, email: row.email });
     } catch (err) {
         res.status(500).json({ error: 'Database error' });
     }
